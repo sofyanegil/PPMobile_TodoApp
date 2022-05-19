@@ -21,7 +21,7 @@ fun TodoListItem(item: TodoItem) {
     ) {
         Column {
             Row(
-                modifier = Modifier.padding(4.dp)
+                modifier = Modifier.padding(20.dp)
             ) {
                 Text(text = item.name, modifier = Modifier.weight(0.6f))
                 var status = "Not Done"
