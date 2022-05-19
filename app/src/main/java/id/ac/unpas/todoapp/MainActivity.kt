@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreen(scaffoldState: ScaffoldState = rememberScaffoldState()) {
     val todoDatabase = TodoDatabase.getInstance(LocalContext.current)
-    val todoRepository = TodoRepository(todoDao = todoDatabase.todoDao())
+    val todoRepository = TodoRepository(todoDatabase.todoDao(), TodoService.getInstance())
     val liveData = todoRepository.readAllData
     val items: List<TodoItem> by liveData.observeAsState(initial = listOf())
     val name = remember { mutableStateOf(TextFieldValue("")) }
@@ -57,12 +57,20 @@ fun MainScreen(scaffoldState: ScaffoldState = rememberScaffoldState()) {
 
                 Button(onClick = {
                     scope.launch {
-                        todoRepository.addTodo(TodoItem(0, name.value.text, false))
+                        todoRepository.addTodo(TodoItem("", name.value.text, false))
                         name.value = TextFieldValue("")
                         scaffoldState.snackbarHostState.showSnackbar("Activity has been saved")
                     }
                 }) {
                     Text(text = "Save")
+                }
+
+                Button(onClick = {
+                    scope.launch {
+                        todoRepository.sync()
+                    }
+                }) {
+                    Text(text = "Refresh")
                 }
 
                 Divider(color = Color.Gray, thickness = 1.dp)

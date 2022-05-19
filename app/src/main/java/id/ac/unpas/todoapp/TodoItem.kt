@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
 @Entity(tableName = "todo_list")
 data class TodoItem(
     @PrimaryKey
-    val id : String,
+    var id : String,
 
     val name: String,
 
