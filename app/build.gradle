@@ -60,14 +60,14 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
 
-    implementation 'androix.room:room-runtime:2.4.2'
-    annotationProcessor 'androix.room:room-compiler:2.4.2'
-    implementation 'androix.room:room-ktx:2.4.2'
+    implementation 'androidx.room:room-runtime:2.4.2'
+    annotationProcessor 'androidx.room:room-compiler:2.4.2'
+    implementation 'androidx.room:room-ktx:2.4.2'
     kapt 'androidx.room:room-compiler:2.4.2'
 
-    implementation "androidx.compose.runtime:runtime:1.1.1"
-    implementation "androidx.compose.runtime:runtime-livedata:1.1.1"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.1"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.1"
+    implementation 'androidx.compose.runtime:runtime:1.1.1'
+    implementation 'androidx.compose.runtime:runtime-livedata:1.1.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
 
 }
