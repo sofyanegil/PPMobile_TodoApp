@@ -22,7 +22,9 @@ class TodoRepository(private val todoDao: TodoDao, private val todoService: Todo
 
     suspend fun addTodo(todoItem: TodoItem) {
         todoItem.id = uuid4().toString()
-        todoDao.insert(todoItem)
+        if(todoItem.name != "") {
+            todoDao.insert(todoItem)
+        }
 
         /* Save to Web Service, error because the web service is not available, make apps force close
             var isDone = 0

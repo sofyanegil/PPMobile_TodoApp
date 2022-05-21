@@ -5,20 +5,19 @@ import android.location.Location
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -51,7 +50,7 @@ fun MainScreen() {
     var doNotShowRationale by rememberSaveable {
         mutableStateOf(false)
     }
-    var permissionState = rememberMultiplePermissionsState(
+    val permissionState = rememberMultiplePermissionsState(
         listOf(
             android.Manifest.permission.ACCESS_COARSE_LOCATION,
             android.Manifest.permission.ACCESS_FINE_LOCATION
@@ -64,18 +63,22 @@ fun MainScreen() {
             MainScreenContent(locationPermitted = true, fusedLocationClient = fusedLocationClient)
         }
         permissionState.shouldShowRationale || !permissionState.permissionRequested -> {
-            Column() {
-                Text(text = "Aplikasi membutuhkan izin untuk mengakses lokasi anda")
-                Button(onClick = { permissionState.launchMultiplePermissionRequest()}) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(textAlign = TextAlign.Center, text = "Aplikasi membutuhkan izin\n untuk mengakses lokasi anda")
+                Button(onClick = { permissionState.launchMultiplePermissionRequest() }) {
                     Text(text = "Minta izin")
                 }
-                Button(onClick = { doNotShowRationale = false}) {
+                Button(onClick = { doNotShowRationale = false }) {
                     Text(text = "Jangan munculkan lagi")
                 }
             }
         }
         else -> {
-            MainScreenContent(locationPermitted = false, fusedLocationClient = fusedLocationClient )
+            MainScreenContent(locationPermitted = false, fusedLocationClient = fusedLocationClient)
         }
     }
 }
@@ -145,7 +148,7 @@ fun MainScreenContent(
 
                 Button(onClick = {
                     scope.launch {
-                        if(locationPermitted){
+                        if (locationPermitted) {
                             fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
                                 location?.let {
                                     latitude.value = TextFieldValue(it.latitude.toString())
