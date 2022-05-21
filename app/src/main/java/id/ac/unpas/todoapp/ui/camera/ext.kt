@@ -1,4 +1,4 @@
-package id.ac.unpas.todoapp.extension
+package id.ac.unpas.todoapp.ui.camera
 
 import android.content.Context
 import android.util.Log

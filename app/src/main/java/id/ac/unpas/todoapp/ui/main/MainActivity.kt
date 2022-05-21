@@ -2,9 +2,11 @@ package id.ac.unpas.todoapp.ui.main
 
 import android.annotation.SuppressLint
 import android.location.Location
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -19,13 +21,16 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
 import id.ac.unpas.todoapp.entity.TodoItem
+import id.ac.unpas.todoapp.ui.camera.CameraCapture
 import id.ac.unpas.todoapp.ui.theme.TodoAppTheme
 import kotlinx.coroutines.launch
 
@@ -53,7 +58,8 @@ fun MainScreen() {
     val permissionState = rememberMultiplePermissionsState(
         listOf(
             android.Manifest.permission.ACCESS_COARSE_LOCATION,
-            android.Manifest.permission.ACCESS_FINE_LOCATION
+            android.Manifest.permission.ACCESS_FINE_LOCATION,
+            android.Manifest.permission.CAMERA
         )
     )
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
@@ -68,7 +74,10 @@ fun MainScreen() {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(textAlign = TextAlign.Center, text = "Aplikasi membutuhkan izin\n untuk mengakses lokasi anda")
+                Text(
+                    textAlign = TextAlign.Center,
+                    text = "Aplikasi membutuhkan izin\n untuk mengakses lokasi anda"
+                )
                 Button(onClick = { permissionState.launchMultiplePermissionRequest() }) {
                     Text(text = "Minta izin")
                 }
@@ -84,6 +93,7 @@ fun MainScreen() {
 }
 
 
+@OptIn(ExperimentalPermissionsApi::class)
 @SuppressLint("MissingPermission")
 @Composable
 fun MainScreenContent(
@@ -97,76 +107,103 @@ fun MainScreenContent(
     val latitude = remember { mutableStateOf(TextFieldValue("")) }
     val longitude = remember { mutableStateOf(TextFieldValue("")) }
     val scope = rememberCoroutineScope()
+    val openCamera = remember { mutableStateOf(false) }
+    var imageUri by remember { mutableStateOf(Uri.parse("file://dev/null")) }
 
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colors.background
-    ) {
-        Scaffold(scaffoldState = scaffoldState) {
-            Column(modifier = Modifier.padding(8.dp)) {
-                OutlinedTextField(
-                    value = name.value.text,
-                    modifier = Modifier.fillMaxWidth(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    label = { Text(text = "Name") },
-                    onValueChange = {
-                        name.value = TextFieldValue(it)
-                    })
+    if (openCamera.value) {
+        CameraCapture(onImageFile = { file ->
+            imageUri = file.toUri()
+            openCamera.value = false
+        })
+    } else {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colors.background
+        ) {
+            Scaffold(scaffoldState = scaffoldState) {
+                Column(modifier = Modifier.padding(8.dp)) {
 
-                if (locationPermitted) {
-                    TextField(
-                        readOnly = true,
-                        value = latitude.value.text,
+                    Image(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(120.dp),
+                        painter = rememberAsyncImagePainter(imageUri),
+                        contentDescription = "Captured Image"
+                    )
+
+                    OutlinedTextField(
+                        value = name.value.text,
                         modifier = Modifier.fillMaxWidth(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                        label = { Text(text = "Latitude") },
+                        label = { Text(text = "Name") },
                         onValueChange = {
-                            latitude.value = TextFieldValue(it)
+                            name.value = TextFieldValue(it)
                         })
 
-                    TextField(
-                        readOnly = true,
-                        value = longitude.value.text,
-                        modifier = Modifier.fillMaxWidth(),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                        label = { Text(text = "Longitude") },
-                        onValueChange = {
-                            longitude.value = TextFieldValue(it)
-                        })
+                    if (locationPermitted) {
+                        TextField(
+                            readOnly = true,
+                            value = latitude.value.text,
+                            modifier = Modifier.fillMaxWidth(),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                            label = { Text(text = "Latitude") },
+                            onValueChange = {
+                                latitude.value = TextFieldValue(it)
+                            })
 
-                }
+                        TextField(
+                            readOnly = true,
+                            value = longitude.value.text,
+                            modifier = Modifier.fillMaxWidth(),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                            label = { Text(text = "Longitude") },
+                            onValueChange = {
+                                longitude.value = TextFieldValue(it)
+                            })
 
-                Button(onClick = {
-                    scope.launch {
-                        mainViewModel.addTodo(name.value.text)
-                        name.value = TextFieldValue("")
-                        scaffoldState.snackbarHostState.showSnackbar("Activity has been saved")
                     }
-                }) {
-                    Text(text = "Save")
-                }
 
-                Button(onClick = {
-                    scope.launch {
-                        if (locationPermitted) {
-                            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                                location?.let {
-                                    latitude.value = TextFieldValue(it.latitude.toString())
-                                    longitude.value = TextFieldValue(location.longitude.toString())
+                    Button(onClick = {
+                        scope.launch {
+                            mainViewModel.addTodo(name.value.text)
+                            name.value = TextFieldValue("")
+                            scaffoldState.snackbarHostState.showSnackbar("Activity has been saved")
+                        }
+                    }) {
+                        Text(text = "Save")
+                    }
+
+                    Button(onClick = {
+                        scope.launch {
+                            if (locationPermitted) {
+                                fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                                    location?.let {
+                                        latitude.value = TextFieldValue(it.latitude.toString())
+                                        longitude.value =
+                                            TextFieldValue(location.longitude.toString())
+                                    }
                                 }
                             }
+                            // mainViewModel.syncTodo()
                         }
-                        // mainViewModel.syncTodo()
+                    }) {
+                        Text(text = "Refresh")
                     }
-                }) {
-                    Text(text = "Refresh")
+
+                    Button(onClick = {
+                        scope.launch {
+                            openCamera.value = true
+                        }
+                    }) {
+                        Text(text = "Capture")
+                    }
+
+                    Divider(color = Color.Gray, thickness = 1.dp)
+
+                    TodoList(list = items)
                 }
 
-                Divider(color = Color.Gray, thickness = 1.dp)
-
-                TodoList(list = items)
             }
-
         }
     }
 }
