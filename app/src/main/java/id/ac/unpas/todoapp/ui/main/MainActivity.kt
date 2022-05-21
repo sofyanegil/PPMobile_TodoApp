@@ -40,6 +40,8 @@ fun MainScreen(scaffoldState: ScaffoldState = rememberScaffoldState()) {
     val mainViewModel = hiltViewModel<MainViewModel>()
     val items: List<TodoItem> by mainViewModel.liveData.observeAsState(initial = listOf())
     val name = remember { mutableStateOf(TextFieldValue("")) }
+    val latitude = remember { mutableStateOf(TextFieldValue("")) }
+    val longitude = remember { mutableStateOf(TextFieldValue("")) }
     val scope = rememberCoroutineScope()
 
     Surface(
@@ -55,6 +57,24 @@ fun MainScreen(scaffoldState: ScaffoldState = rememberScaffoldState()) {
                     label = { Text(text = "Name") },
                     onValueChange = {
                         name.value = TextFieldValue(it)
+                    })
+
+                OutlinedTextField(
+                    value = latitude.value.text,
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    label = { Text(text = "Latitude") },
+                    onValueChange = {
+                        latitude.value = TextFieldValue(it)
+                    })
+
+                OutlinedTextField(
+                    value = longitude.value.text,
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    label = { Text(text = "Longitude") },
+                    onValueChange = {
+                        longitude.value = TextFieldValue(it)
                     })
 
                 Button(onClick = {
