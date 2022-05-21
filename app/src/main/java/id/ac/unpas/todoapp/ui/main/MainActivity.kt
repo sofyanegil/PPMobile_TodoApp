@@ -109,6 +109,7 @@ fun MainScreenContent(
     val scope = rememberCoroutineScope()
     val openCamera = remember { mutableStateOf(false) }
     var imageUri by remember { mutableStateOf(Uri.parse("file://dev/null")) }
+    var isDark = mainViewModel.isDark
 
     if (openCamera.value) {
         CameraCapture(onImageFile = { file ->
@@ -118,7 +119,7 @@ fun MainScreenContent(
     } else {
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colors.background
+            color = if (isDark) Color.Gray else MaterialTheme.colors.background
         ) {
             Scaffold(scaffoldState = scaffoldState) {
                 Column(modifier = Modifier.padding(8.dp)) {
