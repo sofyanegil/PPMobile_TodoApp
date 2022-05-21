@@ -111,7 +111,8 @@ fun MainScreenContent(
                     })
 
                 if (locationPermitted) {
-                    OutlinedTextField(
+                    TextField(
+                        readOnly = true,
                         value = latitude.value.text,
                         modifier = Modifier.fillMaxWidth(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
@@ -120,7 +121,8 @@ fun MainScreenContent(
                             latitude.value = TextFieldValue(it)
                         })
 
-                    OutlinedTextField(
+                    TextField(
+                        readOnly = true,
                         value = longitude.value.text,
                         modifier = Modifier.fillMaxWidth(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
