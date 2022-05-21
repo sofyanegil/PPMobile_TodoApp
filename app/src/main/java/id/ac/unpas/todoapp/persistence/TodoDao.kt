@@ -1,10 +1,11 @@
-package id.ac.unpas.todoapp
+package id.ac.unpas.todoapp.persistence
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import id.ac.unpas.todoapp.entity.TodoItem
 
 @Dao
 interface TodoDao {

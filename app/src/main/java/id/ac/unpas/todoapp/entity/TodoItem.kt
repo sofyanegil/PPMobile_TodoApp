@@ -1,4 +1,4 @@
-package id.ac.unpas.todoapp
+package id.ac.unpas.todoapp.entity
 
 import androidx.room.ColumnInfo
 import  androidx.room.Entity

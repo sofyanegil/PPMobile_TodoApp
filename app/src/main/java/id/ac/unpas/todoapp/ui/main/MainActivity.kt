@@ -1,4 +1,4 @@
-package id.ac.unpas.todoapp
+package id.ac.unpas.todoapp.ui.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -12,14 +12,17 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import id.ac.unpas.todoapp.entity.TodoItem
 import id.ac.unpas.todoapp.ui.theme.TodoAppTheme
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.layout.Column as Column1
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,10 +37,8 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen(scaffoldState: ScaffoldState = rememberScaffoldState()) {
-    val todoDatabase = TodoDatabase.getInstance(LocalContext.current)
-    val todoRepository = TodoRepository(todoDatabase.todoDao(), TodoService.getInstance())
-    val liveData = todoRepository.readAllData
-    val items: List<TodoItem> by liveData.observeAsState(initial = listOf())
+    val mainViewModel = hiltViewModel<MainViewModel>()
+    val items: List<TodoItem> by mainViewModel.liveData.observeAsState(initial = listOf())
     val name = remember { mutableStateOf(TextFieldValue("")) }
     val scope = rememberCoroutineScope()
 
@@ -47,7 +48,8 @@ fun MainScreen(scaffoldState: ScaffoldState = rememberScaffoldState()) {
     ) {
         Scaffold(scaffoldState = scaffoldState) {
             Column1(modifier = Modifier.padding(8.dp)) {
-                OutlinedTextField(value = name.value.text,
+                OutlinedTextField(
+                    value = name.value.text,
                     modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     label = { Text(text = "Name") },
@@ -57,7 +59,7 @@ fun MainScreen(scaffoldState: ScaffoldState = rememberScaffoldState()) {
 
                 Button(onClick = {
                     scope.launch {
-                        todoRepository.addTodo(TodoItem("", name.value.text, false))
+                        mainViewModel.addTodo(name.value.text)
                         name.value = TextFieldValue("")
                         scaffoldState.snackbarHostState.showSnackbar("Activity has been saved")
                     }
@@ -67,7 +69,7 @@ fun MainScreen(scaffoldState: ScaffoldState = rememberScaffoldState()) {
 
                 Button(onClick = {
                     scope.launch {
-                        todoRepository.sync()
+                        mainViewModel.syncTodo()
                     }
                 }) {
                     Text(text = "Refresh")

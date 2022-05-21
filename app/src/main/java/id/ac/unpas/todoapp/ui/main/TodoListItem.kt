@@ -1,4 +1,4 @@
-package id.ac.unpas.todoapp
+package id.ac.unpas.todoapp.ui.main
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import id.ac.unpas.todoapp.entity.TodoItem
 
 @Composable
 fun TodoListItem(item: TodoItem) {
