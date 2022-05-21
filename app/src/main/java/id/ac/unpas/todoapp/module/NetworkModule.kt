@@ -1,9 +1,10 @@
-package id.ac.unpas.todoapp
+package id.ac.unpas.todoapp.module
 
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import id.ac.unpas.todoapp.network.TodoService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton

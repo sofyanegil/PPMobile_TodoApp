@@ -1,8 +1,11 @@
-package id.ac.unpas.todoapp
+package id.ac.unpas.todoapp.repository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import com.benasher44.uuid.uuid4
+import id.ac.unpas.todoapp.entity.TodoItem
+import id.ac.unpas.todoapp.network.TodoService
+import id.ac.unpas.todoapp.persistence.TodoDao
 
 class TodoRepository(private val todoDao: TodoDao, private val todoService: TodoService) {
     val readAllData: LiveData<List<TodoItem>> = todoDao.getAll()

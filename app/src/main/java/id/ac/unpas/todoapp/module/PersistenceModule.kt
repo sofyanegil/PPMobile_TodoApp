@@ -1,4 +1,4 @@
-package id.ac.unpas.todoapp
+package id.ac.unpas.todoapp.module
 
 import android.app.Application
 import androidx.room.Room
@@ -6,6 +6,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import id.ac.unpas.todoapp.persistence.TodoDao
+import id.ac.unpas.todoapp.persistence.TodoDatabase
 import javax.inject.Singleton
 
 @Module

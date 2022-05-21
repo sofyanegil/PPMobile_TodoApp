@@ -1,7 +1,7 @@
-package id.ac.unpas.todoapp
+package id.ac.unpas.todoapp.network
 
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import id.ac.unpas.todoapp.network.response.TodoGetResponse
+import id.ac.unpas.todoapp.network.response.TodoPostResponse
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
