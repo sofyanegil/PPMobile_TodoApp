@@ -97,7 +97,6 @@ fun MainScreen() {
 @SuppressLint("MissingPermission")
 @Composable
 fun MainScreenContent(
-    scaffoldState: ScaffoldState = rememberScaffoldState(),
     locationPermitted: Boolean,
     fusedLocationClient: FusedLocationProviderClient
 ) {
@@ -119,9 +118,8 @@ fun MainScreenContent(
     } else {
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = if (isDark) Color.Gray else MaterialTheme.colors.background
+            color = if (isDark) MaterialTheme.colors.background else Color.LightGray
         ) {
-            Scaffold(scaffoldState = scaffoldState) {
                 Column(modifier = Modifier.padding(8.dp)) {
 
                     Image(
@@ -168,7 +166,6 @@ fun MainScreenContent(
                         scope.launch {
                             mainViewModel.addTodo(name.value.text)
                             name.value = TextFieldValue("")
-                            scaffoldState.snackbarHostState.showSnackbar("Activity has been saved")
                         }
                     }) {
                         Text(text = "Save")
@@ -207,4 +204,3 @@ fun MainScreenContent(
             }
         }
     }
-}
