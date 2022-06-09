@@ -25,6 +25,21 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            buildConfigField("String", "SERVER_URL",'"http://api.unpas.ac.id')
+
+        }
+
+        debug {
+            debuggable true
+
+            buildConfigField("String", "SERVER_URL",'"http://192.168.0.102:8000/api/"')
+        }
+
+        staging {
+            debuggable true
+
+            buildConfigField("String", "SERVER_URL",'"http://192.168.0.102:8001/api/"')
         }
     }
     compileOptions {
