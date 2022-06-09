@@ -4,6 +4,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import id.ac.unpas.todoapp.BuildConfig
 import id.ac.unpas.todoapp.network.TodoService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -16,7 +17,7 @@ object NetworkModule {
     @Singleton
     fun provideRetrovit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("http://192.168.0.102:8001/api/")
+            .baseUrl(BuildConfig.SERVER_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
